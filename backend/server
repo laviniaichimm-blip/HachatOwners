@@ -1,0 +1,454 @@
+from http.server import (
+    BaseHTTPRequestHandler,
+    HTTPServer
+)
+
+from pathlib import Path
+
+import json
+import mimetypes
+
+from algorithm import analyze_patient
+
+from signal_engine import (
+    build_signal_summary
+)
+
+
+HOST = "127.0.0.1"
+PORT = 8000
+
+
+PROJECT_ROOT = (
+    Path(__file__)
+    .resolve()
+    .parent
+    .parent
+)
+
+FRONTEND_DIR = (
+    PROJECT_ROOT
+    / "frontend"
+)
+
+
+class Server(BaseHTTPRequestHandler):
+
+    def send_json(
+        self,
+        data,
+        status=200
+    ):
+        body = json.dumps(
+            data
+        ).encode("utf-8")
+
+        self.send_response(status)
+
+        self.send_header(
+            "Content-Type",
+            "application/json; charset=utf-8"
+        )
+
+        self.send_header(
+            "Content-Length",
+            str(len(body))
+        )
+
+        self.send_header(
+            "Access-Control-Allow-Origin",
+            "*"
+        )
+
+        self.send_header(
+            "Access-Control-Allow-Headers",
+            "Content-Type"
+        )
+
+        self.end_headers()
+
+        self.wfile.write(body)
+
+
+    def send_file(
+        self,
+        file_path
+    ):
+        if (
+            not file_path.exists()
+            or not file_path.is_file()
+        ):
+            self.send_json(
+                {
+                    "error": "Not found"
+                },
+                404
+            )
+
+            return
+
+
+        content = (
+            file_path.read_bytes()
+        )
+
+
+        content_type, _ = (
+            mimetypes.guess_type(
+                str(file_path)
+            )
+        )
+
+
+        if content_type is None:
+
+            content_type = (
+                "application/octet-stream"
+            )
+
+
+        self.send_response(200)
+
+        self.send_header(
+            "Content-Type",
+            content_type
+        )
+
+        self.send_header(
+            "Content-Length",
+            str(len(content))
+        )
+
+        self.end_headers()
+
+        self.wfile.write(content)
+
+
+    def do_OPTIONS(self):
+
+        self.send_response(200)
+
+        self.send_header(
+            "Access-Control-Allow-Origin",
+            "*"
+        )
+
+        self.send_header(
+            "Access-Control-Allow-Methods",
+            "GET, POST, OPTIONS"
+        )
+
+        self.send_header(
+            "Access-Control-Allow-Headers",
+            "Content-Type"
+        )
+
+        self.end_headers()
+
+
+    def do_GET(self):
+
+        if self.path == "/health":
+
+            self.send_json({
+                "status": "ok",
+                "service": "BioSignal",
+            })
+
+            return
+
+
+        if self.path in (
+            "/",
+            "/index.html"
+        ):
+
+            self.send_file(
+                FRONTEND_DIR
+                / "index.html"
+            )
+
+            return
+
+
+        if self.path == "/style.css":
+
+            self.send_file(
+                FRONTEND_DIR
+                / "style.css"
+            )
+
+            return
+
+
+        if self.path == "/app.js":
+
+            self.send_file(
+                FRONTEND_DIR
+                / "app.js"
+            )
+
+            return
+
+
+        self.send_json(
+            {
+                "error": "Not found"
+            },
+            404
+        )
+
+
+    def do_POST(self):
+
+        if self.path != "/predict":
+
+            self.send_json(
+                {
+                    "error": "Not found"
+                },
+                404
+            )
+
+            return
+
+
+        try:
+
+            length = int(
+                self.headers.get(
+                    "Content-Length",
+                    0
+                )
+            )
+
+
+            body = self.rfile.read(
+                length
+            )
+
+
+            if not body:
+
+                raise ValueError(
+                    "Request body is empty"
+                )
+
+
+            data = json.loads(
+                body.decode("utf-8")
+            )
+
+
+            history = data.get(
+                "history"
+            )
+
+
+            if history is None:
+
+                history = [{
+                    "hr":
+                        data["hr"],
+
+                    "temperature":
+                        data["temperature"],
+
+                    "wbc":
+                        data["wbc"],
+
+                    "lactate":
+                        data["lactate"],
+                }]
+
+
+            if (
+                not isinstance(
+                    history,
+                    list
+                )
+                or len(history) == 0
+            ):
+
+                raise ValueError(
+                    "history must be "
+                    "a non-empty list"
+                )
+
+
+            if len(history) > 50:
+
+                raise ValueError(
+                    "Maximum history length "
+                    "is 50 measurements"
+                )
+
+
+            normalized_history = []
+
+            analyses = []
+
+
+            for point in history:
+
+                measurement = {
+
+                    "hr":
+                        float(
+                            point["hr"]
+                        ),
+
+                    "temperature":
+                        float(
+                            point[
+                                "temperature"
+                            ]
+                        ),
+
+                    "wbc":
+                        float(
+                            point["wbc"]
+                        ),
+
+                    "lactate":
+                        float(
+                            point[
+                                "lactate"
+                            ]
+                        ),
+                }
+
+
+                analysis = analyze_patient(
+                    measurement["hr"],
+                    measurement[
+                        "temperature"
+                    ],
+                    measurement["wbc"],
+                    measurement[
+                        "lactate"
+                    ],
+                )
+
+
+                normalized_history.append(
+                    measurement
+                )
+
+                analyses.append(
+                    analysis
+                )
+
+
+            summary = (
+                build_signal_summary(
+                    normalized_history,
+                    analyses,
+                )
+            )
+
+
+            current = (
+                normalized_history[-1]
+            )
+
+            current_analysis = (
+                analyses[-1]
+            )
+
+
+            response = {
+
+                **summary,
+
+                "current":
+                    current,
+
+                "contributors":
+                    current_analysis[
+                        "contributors"
+                    ],
+
+                "measurement_count":
+                    len(
+                        normalized_history
+                    ),
+
+                "disclaimer":
+                    (
+                        "Research prototype only. "
+                        "The BioSignal warning score "
+                        "is not a medical diagnosis "
+                        "or a clinically validated "
+                        "probability."
+                    ),
+            }
+
+
+            self.send_json(
+                response
+            )
+
+
+        except (
+            KeyError,
+            TypeError,
+            ValueError,
+            json.JSONDecodeError
+        ) as error:
+
+            self.send_json(
+                {
+                    "error": str(error)
+                },
+                400
+            )
+
+
+        except Exception as error:
+
+            self.send_json(
+                {
+                    "error":
+                        "Unexpected server error",
+
+                    "details":
+                        str(error),
+                },
+                500
+            )
+
+
+if __name__ == "__main__":
+
+    print(
+        "BioSignal running"
+    )
+
+    print(
+        f"http://{HOST}:{PORT}"
+    )
+
+
+    server = HTTPServer(
+        (
+            HOST,
+            PORT
+        ),
+        Server
+    )
+
+
+    try:
+
+        server.serve_forever()
+
+    except KeyboardInterrupt:
+
+        print(
+            "\nBioSignal stopped."
+        )
+
+    finally:
+
+        server.server_close()
