@@ -1,5 +1,11 @@
 let measurementHistory = [];
 
+let scoreAnimation = null;
+
+
+/* =========================================================
+   DEMO PATIENTS
+========================================================= */
 
 const demos = {
 
@@ -10,18 +16,21 @@ const demos = {
             wbc: 7.4,
             lactate: 1.0
         },
+
         {
             hr: 80,
             temperature: 36.9,
             wbc: 7.2,
             lactate: 1.1
         },
+
         {
             hr: 84,
             temperature: 37.0,
             wbc: 7.5,
             lactate: 1.0
         },
+
         {
             hr: 81,
             temperature: 36.9,
@@ -38,24 +47,28 @@ const demos = {
             wbc: 8.0,
             lactate: 1.1
         },
+
         {
             hr: 94,
             temperature: 37.5,
             wbc: 9.5,
             lactate: 1.5
         },
+
         {
             hr: 105,
             temperature: 38.0,
             wbc: 11.5,
             lactate: 2.1
         },
+
         {
             hr: 116,
             temperature: 38.7,
             wbc: 14.0,
             lactate: 3.0
         },
+
         {
             hr: 126,
             temperature: 39.2,
@@ -72,18 +85,21 @@ const demos = {
             wbc: 12.0,
             lactate: 2.3
         },
+
         {
             hr: 118,
             temperature: 38.7,
             wbc: 14.5,
             lactate: 3.3
         },
+
         {
             hr: 125,
             temperature: 39.2,
             wbc: 16.0,
             lactate: 4.5
         },
+
         {
             hr: 132,
             temperature: 39.5,
@@ -94,75 +110,232 @@ const demos = {
 };
 
 
+/* =========================================================
+   TIME
+========================================================= */
+
+function getCurrentTime() {
+
+    return new Date().toLocaleTimeString(
+        [],
+        {
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
+}
+
+
+function createDemoTimes(count) {
+
+    const times = [];
+
+    const now = new Date();
+
+    const minutesBetween = 20;
+
+
+    for (
+        let index = count - 1;
+        index >= 0;
+        index--
+    ) {
+
+        const time = new Date(
+            now.getTime()
+            -
+            index
+            *
+            minutesBetween
+            *
+            60
+            *
+            1000
+        );
+
+
+        times.push(
+            time.toLocaleTimeString(
+                [],
+                {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                }
+            )
+        );
+    }
+
+
+    return times;
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
 function getInputMeasurement() {
 
     const measurement = {
-        hr: Number(document.getElementById("hr").value),
+
+        hr:
+            Number(
+                document.getElementById(
+                    "hr"
+                ).value
+            ),
+
         temperature:
-            Number(document.getElementById("temperature").value),
-        wbc: Number(document.getElementById("wbc").value),
+            Number(
+                document.getElementById(
+                    "temperature"
+                ).value
+            ),
+
+        wbc:
+            Number(
+                document.getElementById(
+                    "wbc"
+                ).value
+            ),
+
         lactate:
-            Number(document.getElementById("lactate").value)
+            Number(
+                document.getElementById(
+                    "lactate"
+                ).value
+            ),
+
+        timestamp:
+            getCurrentTime()
     };
 
-    const values = Object.values(measurement);
 
-    if (values.some(value => Number.isNaN(value))) {
-        throw new Error("Please enter all four measurements.");
+    const values = [
+        measurement.hr,
+        measurement.temperature,
+        measurement.wbc,
+        measurement.lactate
+    ];
+
+
+    if (
+        values.some(
+            value =>
+                Number.isNaN(value)
+        )
+    ) {
+
+        throw new Error(
+            "Please enter all four measurements."
+        );
     }
+
 
     return measurement;
 }
 
 
-function setInputMeasurement(measurement) {
+function setInputMeasurement(
+    measurement
+) {
 
-    document.getElementById("hr").value =
+    document.getElementById(
+        "hr"
+    ).value =
         measurement.hr;
 
-    document.getElementById("temperature").value =
+
+    document.getElementById(
+        "temperature"
+    ).value =
         measurement.temperature;
 
-    document.getElementById("wbc").value =
+
+    document.getElementById(
+        "wbc"
+    ).value =
         measurement.wbc;
 
-    document.getElementById("lactate").value =
+
+    document.getElementById(
+        "lactate"
+    ).value =
         measurement.lactate;
 }
 
+
+/* =========================================================
+   ADD MEASUREMENT
+========================================================= */
 
 function addMeasurement() {
 
     try {
 
-        const measurement = getInputMeasurement();
+        const measurement =
+            getInputMeasurement();
 
-        measurementHistory.push(measurement);
+
+        measurementHistory.push(
+            measurement
+        );
+
 
         updateHistoryPreview();
 
     } catch (error) {
 
-        showError(error.message);
+        showError(
+            error.message
+        );
     }
 }
 
+
+/* =========================================================
+   CLEAR
+========================================================= */
 
 function clearHistory() {
 
     measurementHistory = [];
 
     updateHistoryPreview();
+
     resetDashboard();
 }
 
 
+/* =========================================================
+   HISTORY PREVIEW
+========================================================= */
+
 function updateHistoryPreview() {
 
     const preview =
-        document.getElementById("historyPreview");
+        document.getElementById(
+            "historyPreview"
+        );
 
-    if (measurementHistory.length === 0) {
+
+    const count =
+        document.getElementById(
+            "historyCount"
+        );
+
+
+    count.innerText =
+        `${measurementHistory.length} ${
+            measurementHistory.length === 1
+                ? "measurement"
+                : "measurements"
+        }`;
+
+
+    if (
+        measurementHistory.length === 0
+    ) {
 
         preview.innerHTML =
             "No measurements added yet.";
@@ -170,17 +343,27 @@ function updateHistoryPreview() {
         return;
     }
 
+
     preview.innerHTML =
         measurementHistory
             .map(
                 (measurement, index) =>
+
                     `
                     <span class="history-chip">
-                        #${index + 1}
-                        HR ${measurement.hr},
-                        ${measurement.temperature}°C,
-                        WBC ${measurement.wbc},
+
+                        <span class="chip-time">
+                            ${measurement.timestamp || ""}
+                        </span>
+
+                        HR ${measurement.hr}
+                        ·
+                        ${measurement.temperature}°C
+                        ·
+                        WBC ${measurement.wbc}
+                        ·
                         Lac ${measurement.lactate}
+
                     </span>
                     `
             )
@@ -188,78 +371,107 @@ function updateHistoryPreview() {
 }
 
 
+/* =========================================================
+   ANALYZE
+========================================================= */
+
 async function analyzeHistory() {
 
     try {
 
-        if (measurementHistory.length === 0) {
+        if (
+            measurementHistory.length === 0
+        ) {
 
-            const measurement =
-                getInputMeasurement();
-
-            measurementHistory.push(measurement);
+            measurementHistory.push(
+                getInputMeasurement()
+            );
 
             updateHistoryPreview();
         }
 
 
-        setLoading(true);
+        const response =
+            await fetch(
+                "/predict",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            history:
+                                measurementHistory
+                        })
+                }
+            );
 
 
-        const response = await fetch(
-            "/predict",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    history: measurementHistory
-                })
-            }
-        );
-
-
-        const data = await response.json();
+        const data =
+            await response.json();
 
 
         if (!response.ok) {
 
             throw new Error(
-                data.error || "Analysis failed."
+                data.error ||
+                "Analysis failed."
             );
         }
 
 
-        updateDashboard(data);
+        updateDashboard(
+            data
+        );
 
 
     } catch (error) {
 
-        showError(error.message);
-
-    } finally {
-
-        setLoading(false);
+        showError(
+            error.message
+        );
     }
 }
 
 
+/* =========================================================
+   LOAD DEMO
+========================================================= */
+
 function loadDemo(name) {
 
-    const demo = demos[name];
+    const demo =
+        demos[name];
+
 
     if (!demo) {
         return;
     }
 
 
+    const times =
+        createDemoTimes(
+            demo.length
+        );
+
+
     measurementHistory =
-        demo.map(measurement => ({
-            ...measurement
-        }));
+        demo.map(
+            (
+                measurement,
+                index
+            ) => ({
+
+                ...measurement,
+
+                timestamp:
+                    times[index]
+            })
+        );
 
 
     setInputMeasurement(
@@ -275,42 +487,65 @@ function loadDemo(name) {
 }
 
 
-function setLoading(isLoading) {
-
-    const level =
-        document.getElementById("level");
-
-    const status =
-        document.getElementById("statusText");
-
-
-    if (isLoading) {
-
-        level.innerText = "ANALYZING";
-        level.className =
-            "signal-pill neutral";
-
-        status.innerText =
-            "Processing the measurement timeline...";
-    }
-}
-
+/* =========================================================
+   UPDATE DASHBOARD
+========================================================= */
 
 function updateDashboard(data) {
 
-    document.getElementById("score").innerText =
-        data.percentage;
+    animateScore(
+        data.percentage
+    );
 
 
-    updateLevel(data.level);
-    updateTrend(data.trend);
-    updateHeroMeasurements(data.current);
-    updateReasons(data.reasons);
-    updateContributors(data.contributors);
-    drawChart(data.history);
+    updateLevel(
+        data.level
+    );
 
 
-    document.getElementById("pointCount").innerText =
+    updateTrend(
+        data.trend
+    );
+
+
+    updateAlert(
+        data.level,
+        data.trend
+    );
+
+
+    updateHeroMeasurements(
+        data.current
+    );
+
+
+    updateMeasurementChanges();
+
+
+    updateReasons(
+        data.reasons
+    );
+
+
+    updateContributors(
+        data.contributors
+    );
+
+
+    updateBiggestChange();
+
+
+    drawChart(
+        data.history
+    );
+
+
+    updateTimeLabels();
+
+
+    document.getElementById(
+        "pointCount"
+    ).innerText =
         `${data.measurement_count} ${
             data.measurement_count === 1
                 ? "point"
@@ -318,92 +553,668 @@ function updateDashboard(data) {
         }`;
 
 
-    document.getElementById("statusText").innerText =
-        `The current smoothed BioSignal warning score is ` +
-        `${data.percentage}/100. ` +
-        `The detected timeline trend is ${data.trend.toLowerCase()}.`;
+    document.getElementById(
+        "statusText"
+    ).innerText =
+
+        `The current smoothed BioSignal warning score is `
+        +
+        `${data.percentage}/100. `
+        +
+        `The detected trend is `
+        +
+        `${data.trend.toLowerCase()}.`;
 }
 
+
+/* =========================================================
+   SCORE ANIMATION
+========================================================= */
+
+function animateScore(target) {
+
+    const element =
+        document.getElementById(
+            "score"
+        );
+
+
+    if (scoreAnimation) {
+
+        cancelAnimationFrame(
+            scoreAnimation
+        );
+    }
+
+
+    const start =
+        Number(
+            element.innerText
+        ) || 0;
+
+
+    const duration = 700;
+
+    const startTime =
+        performance.now();
+
+
+    function step(currentTime) {
+
+        const elapsed =
+            currentTime -
+            startTime;
+
+
+        const progress =
+            Math.min(
+                elapsed / duration,
+                1
+            );
+
+
+        const eased =
+            1 -
+            Math.pow(
+                1 - progress,
+                3
+            );
+
+
+        const current =
+            Math.round(
+                start
+                +
+                (
+                    target -
+                    start
+                )
+                *
+                eased
+            );
+
+
+        element.innerText =
+            current;
+
+
+        if (
+            progress < 1
+        ) {
+
+            scoreAnimation =
+                requestAnimationFrame(
+                    step
+                );
+        }
+    }
+
+
+    scoreAnimation =
+        requestAnimationFrame(
+            step
+        );
+}
+
+
+/* =========================================================
+   SIGNAL LEVEL
+========================================================= */
 
 function updateLevel(level) {
 
     const element =
-        document.getElementById("level");
+        document.getElementById(
+            "level"
+        );
+
 
     element.innerText =
         `${level} SIGNAL`;
 
+
     element.className =
-        "signal-pill " +
+        "signal-pill "
+        +
         level.toLowerCase();
 }
 
 
+/* =========================================================
+   TREND
+========================================================= */
+
 function updateTrend(trend) {
 
-    const element =
-        document.getElementById("trend");
-
     const symbols = {
+
         RISING: "↑",
+
         FALLING: "↓",
+
         STABLE: "→"
     };
 
-    element.innerText =
+
+    document.getElementById(
+        "trend"
+    ).innerText =
+
         `${symbols[trend] || "—"} ${trend}`;
 }
 
 
-function updateHeroMeasurements(current) {
+/* =========================================================
+   ALERT BANNER
+========================================================= */
 
-    document.getElementById("heroHr").innerText =
-        `${formatNumber(current.hr)} BPM`;
+function updateAlert(
+    level,
+    trend
+) {
 
-    document.getElementById("heroTemp").innerText =
-        `${formatNumber(current.temperature)}°C`;
+    const banner =
+        document.getElementById(
+            "alertBanner"
+        );
 
-    document.getElementById("heroWbc").innerText =
-        formatNumber(current.wbc);
 
-    document.getElementById("heroLactate").innerText =
-        formatNumber(current.lactate);
+    const title =
+        document.getElementById(
+            "alertTitle"
+        );
+
+
+    const text =
+        document.getElementById(
+            "alertText"
+        );
+
+
+    banner.className =
+        "alert-banner";
+
+
+    if (
+        level === "LOW"
+    ) {
+
+        banner.classList.add(
+            "hidden"
+        );
+
+        return;
+    }
+
+
+    if (
+        level === "ELEVATED"
+    ) {
+
+        banner.classList.add(
+            "elevated-alert"
+        );
+
+
+        title.innerText =
+            "Elevated physiological signal";
+
+
+        text.innerText =
+
+            trend === "RISING"
+
+                ? "The warning signal is elevated and continuing to rise."
+
+                : "Several measurements are contributing to an elevated warning signal.";
+
+
+        return;
+    }
+
+
+    banner.classList.add(
+        "strong-alert"
+    );
+
+
+    title.innerText =
+        "Strong physiological warning signal detected";
+
+
+    text.innerText =
+
+        trend === "RISING"
+
+            ? "The current signal is strong and continues to rise across the observed period."
+
+            : "The current combination of measurements produces a strong BioSignal warning score.";
 }
 
+
+/* =========================================================
+   CURRENT VALUES
+========================================================= */
+
+function updateHeroMeasurements(
+    current
+) {
+
+    document.getElementById(
+        "heroHr"
+    ).innerText =
+        `${formatNumber(
+            current.hr
+        )} BPM`;
+
+
+    document.getElementById(
+        "heroTemp"
+    ).innerText =
+        `${formatNumber(
+            current.temperature
+        )}°C`;
+
+
+    document.getElementById(
+        "heroWbc"
+    ).innerText =
+        formatNumber(
+            current.wbc
+        );
+
+
+    document.getElementById(
+        "heroLactate"
+    ).innerText =
+        formatNumber(
+            current.lactate
+        );
+}
+
+
+/* =========================================================
+   MEASUREMENT DELTAS
+========================================================= */
+
+function updateMeasurementChanges() {
+
+    if (
+        measurementHistory.length < 2
+    ) {
+
+        setDelta(
+            "deltaHr",
+            0,
+            "BPM"
+        );
+
+        setDelta(
+            "deltaTemp",
+            0,
+            "°C"
+        );
+
+        setDelta(
+            "deltaWbc",
+            0,
+            ""
+        );
+
+        setDelta(
+            "deltaLactate",
+            0,
+            "mmol/L"
+        );
+
+        return;
+    }
+
+
+    const previous =
+        measurementHistory[
+            measurementHistory.length - 2
+        ];
+
+
+    const current =
+        measurementHistory[
+            measurementHistory.length - 1
+        ];
+
+
+    setDelta(
+        "deltaHr",
+        current.hr - previous.hr,
+        "BPM"
+    );
+
+
+    setDelta(
+        "deltaTemp",
+        current.temperature
+        -
+        previous.temperature,
+        "°C",
+        1
+    );
+
+
+    setDelta(
+        "deltaWbc",
+        current.wbc - previous.wbc,
+        "",
+        1
+    );
+
+
+    setDelta(
+        "deltaLactate",
+        current.lactate
+        -
+        previous.lactate,
+        "mmol/L",
+        1
+    );
+}
+
+
+function setDelta(
+    id,
+    difference,
+    unit,
+    decimals = 0
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (
+        Math.abs(
+            difference
+        ) < 0.001
+    ) {
+
+        element.innerText =
+            "→ No change";
+
+        element.className =
+            "measurement-delta neutral-delta";
+
+        return;
+    }
+
+
+    const arrow =
+        difference > 0
+            ? "↑"
+            : "↓";
+
+
+    const sign =
+        difference > 0
+            ? "+"
+            : "";
+
+
+    element.innerText =
+
+        `${arrow} ${sign}${difference.toFixed(decimals)} ${unit}`;
+
+
+    element.className =
+
+        "measurement-delta "
+        +
+        (
+            difference > 0
+
+                ? "delta-up"
+
+                : "delta-down"
+        );
+}
+
+
+/* =========================================================
+   BIGGEST CHANGE
+========================================================= */
+
+function updateBiggestChange() {
+
+    const title =
+        document.getElementById(
+            "biggestChangeTitle"
+        );
+
+
+    const text =
+        document.getElementById(
+            "biggestChangeText"
+        );
+
+
+    if (
+        measurementHistory.length < 2
+    ) {
+
+        title.innerText =
+            "Not enough history yet";
+
+
+        text.innerText =
+            "Add another measurement to compare changes over time.";
+
+        return;
+    }
+
+
+    const first =
+        measurementHistory[0];
+
+
+    const last =
+        measurementHistory[
+            measurementHistory.length - 1
+        ];
+
+
+    const changes = [
+
+        {
+            name:
+                "Heart rate",
+
+            value:
+                last.hr - first.hr,
+
+            normalized:
+                Math.abs(
+                    last.hr - first.hr
+                ) / 40,
+
+            unit:
+                "BPM",
+
+            decimals:
+                0
+        },
+
+
+        {
+            name:
+                "Temperature",
+
+            value:
+                last.temperature
+                -
+                first.temperature,
+
+            normalized:
+                Math.abs(
+                    last.temperature
+                    -
+                    first.temperature
+                ) / 2,
+
+            unit:
+                "°C",
+
+            decimals:
+                1
+        },
+
+
+        {
+            name:
+                "White blood cell measurement",
+
+            value:
+                last.wbc - first.wbc,
+
+            normalized:
+                Math.abs(
+                    last.wbc - first.wbc
+                ) / 8,
+
+            unit:
+                "",
+
+            decimals:
+                1
+        },
+
+
+        {
+            name:
+                "Lactate",
+
+            value:
+                last.lactate
+                -
+                first.lactate,
+
+            normalized:
+                Math.abs(
+                    last.lactate
+                    -
+                    first.lactate
+                ) / 3,
+
+            unit:
+                "mmol/L",
+
+            decimals:
+                1
+        }
+
+    ];
+
+
+    const biggest =
+        changes.reduce(
+            (currentBiggest, item) =>
+
+                item.normalized
+                >
+                currentBiggest.normalized
+
+                    ? item
+
+                    : currentBiggest
+        );
+
+
+    const direction =
+
+        biggest.value > 0
+
+            ? "increased"
+
+            : biggest.value < 0
+
+                ? "decreased"
+
+                : "remained stable";
+
+
+    title.innerText =
+
+        `${biggest.name} ${direction}`;
+
+
+    text.innerText =
+
+        biggest.value === 0
+
+            ? `${biggest.name} did not change across the observed period.`
+
+            : `${biggest.name} changed by ${Math.abs(
+                biggest.value
+            ).toFixed(
+                biggest.decimals
+            )} ${biggest.unit} from the first to the latest measurement.`;
+}
+
+
+/* =========================================================
+   REASONS
+========================================================= */
 
 function updateReasons(reasons) {
 
     const container =
-        document.getElementById("reasons");
+        document.getElementById(
+            "reasons"
+        );
+
 
     container.innerHTML =
         reasons
             .map(
                 reason =>
-                    `<div class="reason-item">${escapeHtml(reason)}</div>`
+
+                    `
+                    <div class="reason-item">
+                        ${escapeHtml(reason)}
+                    </div>
+                    `
             )
             .join("");
 }
 
 
-function updateContributors(contributors) {
+/* =========================================================
+   CONTRIBUTION BARS
+========================================================= */
+
+function updateContributors(
+    contributors
+) {
 
     const mapping = [
+
         [
             "heart_rate",
             "barHr",
             "valueHr"
         ],
+
         [
             "temperature",
             "barTemperature",
             "valueTemperature"
         ],
+
         [
             "wbc",
             "barWbc",
             "valueWbc"
         ],
+
         [
             "lactate",
             "barLactate",
@@ -412,98 +1223,176 @@ function updateContributors(contributors) {
     ];
 
 
-    for (const [
-        key,
-        barId,
-        valueId
-    ] of mapping) {
+    mapping.forEach(
+        (
+            [
+                key,
+                barId,
+                valueId
+            ]
+        ) => {
 
-        const value =
-            contributors[key] || 0;
+            const value =
+                contributors[key] || 0;
 
-        const percentage =
-            Math.round(value * 100);
 
-        document.getElementById(barId).style.width =
-            `${percentage}%`;
+            const percentage =
+                Math.round(
+                    value * 100
+                );
 
-        document.getElementById(valueId).innerText =
-            `${percentage}%`;
-    }
+
+            const bar =
+                document.getElementById(
+                    barId
+                );
+
+
+            bar.style.width =
+                "0%";
+
+
+            requestAnimationFrame(
+                () => {
+
+                    requestAnimationFrame(
+                        () => {
+
+                            bar.style.width =
+                                `${percentage}%`;
+                        }
+                    );
+                }
+            );
+
+
+            document.getElementById(
+                valueId
+            ).innerText =
+                `${percentage}%`;
+        }
+    );
 }
 
 
+/* =========================================================
+   GRAPH
+========================================================= */
+
 function drawChart(history) {
 
-    const svgWidth = 700;
-    const svgHeight = 260;
+    const width = 700;
+    const height = 260;
+
     const horizontalPadding = 14;
     const verticalPadding = 10;
 
+
     const usableWidth =
-        svgWidth - horizontalPadding * 2;
+        width
+        -
+        horizontalPadding * 2;
+
 
     const usableHeight =
-        svgHeight - verticalPadding * 2;
+        height
+        -
+        verticalPadding * 2;
 
 
     const line =
-        document.getElementById("signalLine");
+        document.getElementById(
+            "signalLine"
+        );
+
 
     const pointsGroup =
-        document.getElementById("signalPoints");
+        document.getElementById(
+            "signalPoints"
+        );
 
 
-    if (!history || history.length === 0) {
+    if (
+        !history ||
+        history.length === 0
+    ) {
 
-        line.setAttribute("points", "");
-        pointsGroup.innerHTML = "";
+        line.setAttribute(
+            "points",
+            ""
+        );
+
+
+        pointsGroup.innerHTML =
+            "";
+
+
         return;
     }
 
 
     const coordinates =
-        history.map((value, index) => {
+        history.map(
+            (
+                value,
+                index
+            ) => {
 
-            let x;
+                let x;
 
-            if (history.length === 1) {
 
-                x = svgWidth / 2;
+                if (
+                    history.length === 1
+                ) {
 
-            } else {
+                    x =
+                        width / 2;
 
-                x =
-                    horizontalPadding +
+                } else {
+
+                    x =
+                        horizontalPadding
+                        +
+                        (
+                            index
+                            /
+                            (
+                                history.length - 1
+                            )
+                        )
+                        *
+                        usableWidth;
+                }
+
+
+                const clamped =
+                    Math.max(
+                        0,
+                        Math.min(
+                            1,
+                            value
+                        )
+                    );
+
+
+                const y =
+                    verticalPadding
+                    +
                     (
-                        index /
-                        (history.length - 1)
-                    ) *
-                    usableWidth;
+                        1 - clamped
+                    )
+                    *
+                    usableHeight;
+
+
+                return {
+                    x,
+                    y,
+                    value:
+                        clamped
+                };
             }
-
-
-            const clamped =
-                Math.max(
-                    0,
-                    Math.min(1, value)
-                );
-
-
-            const y =
-                verticalPadding +
-                (
-                    1 - clamped
-                ) *
-                usableHeight;
-
-
-            return {
-                x,
-                y,
-                value: clamped
-            };
-        });
+        );
 
 
     const polyline =
@@ -515,9 +1404,26 @@ function drawChart(history) {
             .join(" ");
 
 
+    line.style.opacity =
+        "0";
+
+
     line.setAttribute(
         "points",
         polyline
+    );
+
+
+    setTimeout(
+        () => {
+
+            line.style.transition =
+                "opacity 500ms ease";
+
+            line.style.opacity =
+                "1";
+        },
+        30
     );
 
 
@@ -525,6 +1431,7 @@ function drawChart(history) {
         coordinates
             .map(
                 point =>
+
                     `
                     <circle
                         class="signal-point"
@@ -532,9 +1439,13 @@ function drawChart(history) {
                         cy="${point.y}"
                         r="6"
                     >
+
                         <title>
-                            ${Math.round(point.value * 100)}/100
+                            ${Math.round(
+                                point.value * 100
+                            )}/100
                         </title>
+
                     </circle>
                     `
             )
@@ -542,64 +1453,183 @@ function drawChart(history) {
 }
 
 
-function showError(message) {
+/* =========================================================
+   TIME LABELS
+========================================================= */
 
-    document.getElementById("level").innerText =
-        "ERROR";
+function updateTimeLabels() {
 
-    document.getElementById("level").className =
-        "signal-pill strong";
+    const container =
+        document.getElementById(
+            "timeLabels"
+        );
 
-    const status =
-        document.getElementById("statusText");
 
-    status.innerText = message;
-    status.classList.add("error");
+    if (
+        measurementHistory.length === 0
+    ) {
+
+        container.innerHTML =
+            "";
+
+        return;
+    }
+
+
+    container.innerHTML =
+        measurementHistory
+            .map(
+                measurement =>
+
+                    `<span>${measurement.timestamp || ""}</span>`
+            )
+            .join("");
 }
 
 
+/* =========================================================
+   ERROR
+========================================================= */
+
+function showError(message) {
+
+    const status =
+        document.getElementById(
+            "statusText"
+        );
+
+
+    status.innerText =
+        message;
+
+
+    document.getElementById(
+        "level"
+    ).innerText =
+        "ERROR";
+
+
+    document.getElementById(
+        "level"
+    ).className =
+        "signal-pill strong";
+}
+
+
+/* =========================================================
+   RESET DASHBOARD
+========================================================= */
+
 function resetDashboard() {
 
-    document.getElementById("score").innerText =
-        "--";
+    document.getElementById(
+        "score"
+    ).innerText =
+        "0";
 
-    document.getElementById("level").innerText =
+
+    document.getElementById(
+        "level"
+    ).innerText =
         "WAITING";
 
-    document.getElementById("level").className =
+
+    document.getElementById(
+        "level"
+    ).className =
         "signal-pill neutral";
 
-    document.getElementById("trend").innerText =
+
+    document.getElementById(
+        "trend"
+    ).innerText =
         "— NO TREND";
 
-    document.getElementById("statusText").innerText =
-        "Choose a demo patient or enter a measurement history.";
 
-    document.getElementById("statusText").classList.remove(
-        "error"
-    );
+    document.getElementById(
+        "statusText"
+    ).innerText =
 
-    document.getElementById("heroHr").innerText =
+        "Choose a demo patient or enter your own measurements.";
+
+
+    document.getElementById(
+        "heroHr"
+    ).innerText =
         "--";
 
-    document.getElementById("heroTemp").innerText =
+
+    document.getElementById(
+        "heroTemp"
+    ).innerText =
         "--";
 
-    document.getElementById("heroWbc").innerText =
+
+    document.getElementById(
+        "heroWbc"
+    ).innerText =
         "--";
 
-    document.getElementById("heroLactate").innerText =
+
+    document.getElementById(
+        "heroLactate"
+    ).innerText =
         "--";
 
-    document.getElementById("reasons").innerHTML =
+
+    document.getElementById(
+        "deltaHr"
+    ).innerText =
+        "—";
+
+
+    document.getElementById(
+        "deltaTemp"
+    ).innerText =
+        "—";
+
+
+    document.getElementById(
+        "deltaWbc"
+    ).innerText =
+        "—";
+
+
+    document.getElementById(
+        "deltaLactate"
+    ).innerText =
+        "—";
+
+
+    document.getElementById(
+        "alertBanner"
+    ).className =
+        "alert-banner hidden";
+
+
+    document.getElementById(
+        "biggestChangeTitle"
+    ).innerText =
+        "Waiting for measurements";
+
+
+    document.getElementById(
+        "biggestChangeText"
+    ).innerText =
+
+        "BioSignal will highlight the largest change across the observed period.";
+
+
+    document.getElementById(
+        "reasons"
+    ).innerHTML =
+
         `
         <div class="reason-item muted">
             Analysis reasons will appear here.
         </div>
         `;
 
-    document.getElementById("pointCount").innerText =
-        "0 points";
 
     updateContributors({
         heart_rate: 0,
@@ -608,30 +1638,66 @@ function resetDashboard() {
         lactate: 0
     });
 
+
+    document.getElementById(
+        "pointCount"
+    ).innerText =
+        "0 points";
+
+
+    document.getElementById(
+        "timeLabels"
+    ).innerHTML =
+        "";
+
+
     drawChart([]);
 }
 
 
+/* =========================================================
+   HELPERS
+========================================================= */
+
 function formatNumber(value) {
 
-    if (Number.isInteger(value)) {
-        return value;
+    const number =
+        Number(value);
+
+
+    if (
+        Number.isInteger(
+            number
+        )
+    ) {
+
+        return number;
     }
 
-    return Number(value).toFixed(1);
+
+    return number.toFixed(1);
 }
 
 
 function escapeHtml(text) {
 
     const div =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
-    div.innerText = text;
+
+    div.innerText =
+        text;
+
 
     return div.innerHTML;
 }
 
+
+/* =========================================================
+   START
+========================================================= */
 
 window.addEventListener(
     "DOMContentLoaded",
@@ -639,7 +1705,6 @@ window.addEventListener(
 
         resetDashboard();
 
-        // Start with the most useful judging demo.
-        loadDemo("rising");
+        updateHistoryPreview();
     }
 );
