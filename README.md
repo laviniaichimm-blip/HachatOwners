@@ -1,377 +1,251 @@
-<h1 align="center">BioSignal</h1>
+<div align="center">
 
-<p align="center">
-  <strong>Turning physiological measurements into understandable early warning signals.</strong>
-</p>
+# 🫀 BioSignal
 
-<p align="center">
-  Physiological timeline analysis · explainable warning score · trend detection · interactive dashboard
-</p>
+### Turning physiological measurements into understandable signals.
 
-<p align="center">
-  <img alt="Python" src="https://img.shields.io/badge/Python-3.x-3776AB?style=flat-square&logo=python&logoColor=white" />
-  <img alt="HTML5" src="https://img.shields.io/badge/HTML5-Frontend-E34F26?style=flat-square&logo=html5&logoColor=white" />
-  <img alt="CSS3" src="https://img.shields.io/badge/CSS3-Dashboard-1572B6?style=flat-square&logo=css3&logoColor=white" />
-  <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?style=flat-square&logo=javascript&logoColor=000000" />
-  <img alt="Dependencies" src="https://img.shields.io/badge/Dependencies-None-success?style=flat-square" />
-  <img alt="Status" src="https://img.shields.io/badge/Status-Research_Prototype-orange?style=flat-square" />
-</p>
+**A lightweight physiological signal-analysis prototype that transforms repeated patient measurements into an explainable warning score, trend and visual timeline.**
 
-<p align="center">
-  <a href="#about-biosignal">About</a> ·
-  <a href="#features">Features</a> ·
-  <a href="#system-architecture">Architecture</a> ·
-  <a href="#algorithm">Algorithm</a> ·
-  <a href="#api">API</a> ·
-  <a href="#running-the-project">Run locally</a>
-</p>
+<br>
 
----
+![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge\&logo=python\&logoColor=white)
+![HTML](https://img.shields.io/badge/HTML5-Frontend-E34F26?style=for-the-badge\&logo=html5\&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS3-Dashboard-1572B6?style=for-the-badge\&logo=css3\&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?style=for-the-badge\&logo=javascript\&logoColor=black)
 
-## About BioSignal
+![No Dependencies](https://img.shields.io/badge/External_Dependencies-None-2ea44f?style=flat-square)
+![Prototype](https://img.shields.io/badge/Status-Research_Prototype-orange?style=flat-square)
+![Medical](https://img.shields.io/badge/Medical_Use-Not_Validated-red?style=flat-square)
 
-BioSignal is a lightweight physiological signal-analysis prototype that combines several measurements into a single, understandable warning signal.
+<br>
 
-Instead of showing measurements independently, BioSignal analyzes their combined pattern over time and produces:
+[Overview](#-overview) •
+[Features](#-features) •
+[Architecture](#-architecture) •
+[How it works](#-how-it-works) •
+[Demo](#-demo-scenarios) •
+[API](#-api) •
+[Run](#-running-biosignal)
 
-| Output                      | Description                              |
-| --------------------------- | ---------------------------------------- |
-| **BioSignal Warning Score** | Normalized prototype score from 0 to 100 |
-| **Signal Level**            | `LOW`, `ELEVATED` or `STRONG`            |
-| **Trend**                   | `RISING`, `STABLE` or `FALLING`          |
-| **Timeline**                | Smoothed evolution of the warning score  |
-| **Explanations**            | Human-readable reasons behind the signal |
-| **Contributors**            | Contribution of each current measurement |
-
-The current prototype analyzes:
-
-| Measurement          | Unit   |
-| -------------------- | ------ |
-| ❤️ Heart Rate        | BPM    |
-| 🌡️ Temperature      | °C     |
-| 🧪 White Blood Cells | 10⁹/L  |
-| 🩸 Lactate           | mmol/L |
-
-> **BioSignal is a research prototype and is not a medical diagnosis or clinically validated probability model.**
+</div>
 
 ---
 
-## Features
+# ✨ Overview
 
-| Feature                          | Description                                         |
-| -------------------------------- | --------------------------------------------------- |
-| 📊 **0–100 Warning Score**       | Displays the current BioSignal score with animation |
-| 🚦 **Signal Classification**     | LOW, ELEVATED or STRONG                             |
-| 📈 **Trend Detection**           | RISING, STABLE or FALLING                           |
-| 🕒 **Measurement Timeline**      | Add multiple measurements before analysis           |
-| 🔔 **Alert System**              | Displays warnings for elevated and strong signals   |
-| ↕️ **Measurement Changes**       | Shows changes between consecutive measurements      |
-| 💡 **Most Important Change**     | Highlights the largest change in the timeline       |
-| 📉 **Signal Graph**              | Displays smoothed warning-score evolution           |
-| 🕐 **Timestamps**                | Timeline measurements include time information      |
-| 🧠 **Explainable Results**       | Generates readable explanations                     |
-| 📊 **Contributor Bars**          | Shows HR, temperature, WBC and lactate contribution |
-| 🧪 **Demo Patients**             | Stable, Rising and Strong scenarios                 |
-| 🔄 **New Patient Reset**         | Clears timeline and dashboard                       |
-| ⚡ **Zero External Dependencies** | Runs with Python and browser-native technologies    |
+**BioSignal** explores a simple idea:
+
+> What if multiple physiological measurements could be transformed into one understandable signal showing both the current state and how it is changing over time?
+
+Instead of displaying measurements independently, BioSignal combines:
+
+* ❤️ **Heart Rate**
+* 🌡️ **Body Temperature**
+* 🧪 **White Blood Cell Count**
+* 🩸 **Lactate**
+
+into an explainable **BioSignal Warning Score**.
+
+The system can analyze a single measurement or an entire timeline of measurements.
+
+It then produces:
+
+| Output                  | Purpose                                              |
+| :---------------------- | :--------------------------------------------------- |
+| **0–100 Warning Score** | Represents the current prototype signal intensity    |
+| **Signal Level**        | `LOW` · `ELEVATED` · `STRONG`                        |
+| **Trend**               | `RISING` · `STABLE` · `FALLING`                      |
+| **Timeline**            | Shows how the signal develops over time              |
+| **Contributors**        | Shows which measurements influence the score most    |
+| **Explanation**         | Converts numerical changes into readable information |
+
+> [!IMPORTANT]
+> **BioSignal is a research prototype.**
+> The displayed score is **not a diagnosis and not a clinically validated probability of sepsis or another medical condition.**
 
 ---
 
-## How It Works
+# 🚀 Features
+
+<table>
+<tr>
+<td width="50%">
+
+### 📊 Signal Analysis
+
+* Animated **0–100 BioSignal score**
+* `LOW / ELEVATED / STRONG`
+* `RISING / STABLE / FALLING`
+* Signal smoothing
+* Weighted measurement scoring
+
+</td>
+<td width="50%">
+
+### 📈 Timeline Analysis
+
+* Add multiple measurements
+* Timestamped measurement history
+* SVG signal graph
+* Previous-vs-current measurement changes
+* Up to **50 measurements per analysis**
+
+</td>
+</tr>
+
+<tr>
+<td width="50%">
+
+### 🧠 Explainability
+
+* Human-readable explanations
+* Measurement contribution bars
+* Strongest current contributor
+* **Most Important Change** detection
+* Trend-aware interpretation
+
+</td>
+<td width="50%">
+
+### 🖥️ Interactive Dashboard
+
+* Live patient input
+* Contextual warning banners
+* Animated score transitions
+* Reset / New Patient workflow
+* Three built-in demo scenarios
+
+</td>
+</tr>
+</table>
+
+---
+
+# 🖥️ Dashboard
+
+The BioSignal interface is built as a single analysis dashboard.
 
 ```text
-Physiological Measurements
-          ↓
-    Input Validation
-          ↓
-   BioSignal Algorithm
-          ↓
-     Raw Scores
-          ↓
-   Signal Smoothing
-          ↓
- Level + Trend Detection
-          ↓
-Explanation + Contributors
-          ↓
-      JSON Response
-          ↓
-   Browser Dashboard
+┌──────────────────────────────────────────────────────────────┐
+│  BIOSIGNAL                                      PROTOTYPE    │
+│  Physiological Early Signal Analysis                         │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│                         72 / 100                             │
+│                                                              │
+│                      STRONG SIGNAL                           │
+│                         ↑ RISING                             │
+│                                                              │
+│  HR 126 BPM     TEMP 39.2°C     WBC 16     LAC 4.5         │
+│                                                              │
+├──────────────────────────────────────────────────────────────┤
+│  MOST IMPORTANT CHANGE                                      │
+│  Lactate increased significantly across the timeline        │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│  SIGNAL EVOLUTION                                           │
+│                                                     ●        │
+│                                              ●──────╯        │
+│                                      ●───────╯               │
+│                            ●─────────╯                       │
+│                  ●─────────╯                                 │
+│                                                              │
+├─────────────────────────────┬────────────────────────────────┤
+│ PATIENT DATA                │ WHY THIS SIGNAL?               │
+│                             │                                │
+│ Heart Rate      126         │ • Heart rate increased        │
+│ Temperature     39.2        │ • Temperature increased       │
+│ WBC             16          │ • Lactate increased           │
+│ Lactate         4.5         │                                │
+│                             │ CONTRIBUTORS                   │
+│ + Add to Timeline           │ Lactate      █████████░       │
+│ Analyze Signal              │ Heart Rate   ███████░░░       │
+└─────────────────────────────┴────────────────────────────────┘
 ```
 
-BioSignal can analyze either one measurement or a timeline containing several measurements.
-
-Each measurement is scored individually before the resulting score history is smoothed and analyzed.
+The actual interface automatically updates the score, graph, alert state, explanations and contributor bars when an analysis is performed.
 
 ---
 
-## System Architecture
+# 🏗️ Architecture
 
 ```mermaid
 flowchart LR
-    User[User / Demo Patient]
-    UI[Frontend Dashboard<br/>HTML + CSS + JavaScript]
-    Server[Python HTTP Server]
-    Algorithm[BioSignal Algorithm]
-    Signal[Signal Engine]
 
-    User --> UI
-    UI -->|POST /predict| Server
-    Server --> Algorithm
-    Algorithm -->|Scores + Contributors| Signal
-    Signal -->|Level + Trend + Explanation| Server
-    Server -->|JSON| UI
-    UI --> User
+    A["👤 User / Demo"] --> B["🖥️ Frontend Dashboard"]
+
+    B -->|"POST /predict"| C["🌐 Python HTTP Server"]
+
+    C --> D["🧮 BioSignal Algorithm"]
+
+    D -->|"Raw Scores + Contributors"| E["📈 Signal Engine"]
+
+    E -->|"Smoothed Score<br/>Level<br/>Trend<br/>Reasons"| C
+
+    C -->|"JSON Response"| B
+
+    B --> F["📊 Visual Result"]
 ```
 
-Complete flow:
+### Data flow
 
 ```text
-Browser
-   ↓
-backend/server
-   ↓
-backend/algorithm.py
-   ↓
-backend/signal_engine
-   ↓
-backend/server
-   ↓
-frontend/app.js
-   ↓
-Dashboard
+Patient Measurements
+        │
+        ▼
+┌───────────────────┐
+│ Input Validation  │
+└─────────┬─────────┘
+          ▼
+┌───────────────────┐
+│ BioSignal Scoring │
+└─────────┬─────────┘
+          ▼
+┌───────────────────┐
+│ Signal Smoothing  │
+└─────────┬─────────┘
+          ▼
+┌───────────────────┐
+│ Trend Detection   │
+└─────────┬─────────┘
+          ▼
+┌───────────────────┐
+│ Explanation       │
+└─────────┬─────────┘
+          ▼
+       Dashboard
 ```
 
 ---
 
-## Dashboard
+# 🧮 How It Works
 
-The BioSignal frontend is a single-page dashboard built using plain HTML, CSS and JavaScript.
+## 1. Measurement scoring
 
-### Current BioSignal
-
-The main dashboard displays:
-
-* BioSignal Warning Score;
-* signal level;
-* detected trend;
-* current physiological measurements;
-* measurement changes relative to the previous point.
-
-Example:
+Each physiological measurement is independently converted into a normalized contribution between:
 
 ```text
-CURRENT BIOSIGNAL
-
-72 / 100
-
-STRONG SIGNAL
-↑ RISING
-
-Heart Rate     126 BPM
-Temperature    39.2°C
-WBC            16
-Lactate        4.5 mmol/L
+0.0 ────────────────────────────── 1.0
 ```
+
+The algorithm uses piecewise interpolation rather than a binary threshold.
+
+This means a measurement can progressively contribute more strongly as its value changes.
 
 ---
 
-### Alert System
+## 2. Weighted BioSignal score
 
-LOW signals do not display an alert.
+The current prototype uses:
 
-ELEVATED and STRONG states generate contextual warning banners.
+| Measurement     |  Weight |
+| :-------------- | ------: |
+| ❤️ Heart Rate   | **25%** |
+| 🌡️ Temperature | **25%** |
+| 🧪 WBC          | **20%** |
+| 🩸 Lactate      | **30%** |
 
-If the signal is also rising, the alert reflects the detected trend.
-
----
-
-### Measurement Timeline
-
-Users can enter:
-
-```text
-Heart Rate
-Temperature
-White Blood Cells
-Lactate
-```
-
-and press:
-
-```text
-+ Add to Timeline
-```
-
-Measurements are stored chronologically.
-
-Example:
-
-```text
-14:10 HR 82 · 36.8°C · WBC 7.4 · Lac 1.0
-14:30 HR 94 · 37.5°C · WBC 9.5 · Lac 1.5
-14:50 HR 105 · 38.0°C · WBC 11.5 · Lac 2.1
-```
-
-Pressing:
-
-```text
-Analyze Signal
-```
-
-sends the complete timeline to the backend.
-
----
-
-### Signal Evolution
-
-The dashboard contains an SVG graph representing the BioSignal warning score over time.
-
-```text
-100 |
-    |
- 75 |                         ●
-    |                    ●────╯
- 50 |               ●────╯
-    |          ●────╯
- 25 |     ●────╯
-    |
-  0 +────────────────────────────
-             Time →
-```
-
-No external charting library is required.
-
----
-
-### Explanations
-
-BioSignal generates human-readable explanations such as:
-
-```text
-Heart rate increased across the observed period.
-
-Temperature increased across the observed period.
-
-Lactate increased across the observed period.
-
-Lactate is one of the strongest contributors to the current signal.
-```
-
----
-
-### Current Contributors
-
-The dashboard shows the relative contribution of:
-
-```text
-Heart Rate
-Temperature
-WBC
-Lactate
-```
-
-using visual progress bars.
-
----
-
-## Demo Scenarios
-
-### Stable Patient
-
-Mostly normal values with little change.
-
-```text
-HR:       82 → 80 → 84 → 81
-Temp:   36.8 → 36.9 → 37.0 → 36.9
-WBC:     7.4 → 7.2 → 7.5 → 7.1
-Lactate: 1.0 → 1.1 → 1.0 → 1.1
-```
-
-Expected result:
-
-```text
-LOW
-STABLE
-```
-
----
-
-### Rising Signal
-
-Measurements progressively worsen.
-
-```text
-82 → 94 → 105 → 116 → 126 BPM
-```
-
-The dashboard demonstrates:
-
-```text
-LOW
- ↓
-ELEVATED
- ↓
-STRONG
-```
-
-with:
-
-```text
-↑ RISING
-```
-
----
-
-### Strong Signal
-
-The strong scenario progresses toward:
-
-```text
-Heart Rate:   132 BPM
-Temperature:  39.5°C
-WBC:          18
-Lactate:      5.2 mmol/L
-```
-
-This demonstrates:
-
-* strong warning state;
-* alert banner;
-* rising trend;
-* measurement changes;
-* contributor bars;
-* signal graph;
-* explanations.
-
----
-
-## Algorithm
-
-The core algorithm is located in:
-
-```text
-backend/algorithm.py
-```
-
-Each physiological variable is converted into a normalized contribution between:
-
-```text
-0.0 → 1.0
-```
-
-using piecewise interpolation.
-
-### Current Weights
-
-| Measurement | Weight |
-| ----------- | -----: |
-| Heart Rate  |    25% |
-| Temperature |    25% |
-| WBC         |    20% |
-| Lactate     |    30% |
-
-The raw score is calculated using:
+The raw score is calculated as:
 
 ```text
 BioSignal =
@@ -381,21 +255,17 @@ BioSignal =
   + Lactate × 0.30
 ```
 
-The value is then converted to the 0–100 display scale.
+The result is normalized between `0.0` and `1.0` and displayed as a score from:
+
+```text
+0 ─────────────────────────────────────────── 100
+```
 
 ---
 
-## Signal Processing
+## 3. Signal smoothing
 
-The signal engine performs:
-
-* score smoothing;
-* signal classification;
-* trend detection;
-* measurement comparison;
-* explanation generation.
-
-### Smoothing
+For measurement timelines, BioSignal reduces sudden jumps using:
 
 ```text
 smoothed =
@@ -404,33 +274,198 @@ smoothed =
 0.4 × previous smoothed value
 ```
 
-This reduces sudden jumps in the graph.
+Example:
+
+```text
+RAW SIGNAL
+
+12 ── 30 ── 55 ── 82
+
+
+SMOOTHED SIGNAL
+
+12 ── 23 ── 42 ── 66
+```
+
+This creates a clearer representation of signal evolution.
 
 ---
 
-### Signal Levels
+## 4. Signal classification
 
-| Score           | Level    |
-| --------------- | -------- |
-| `< 0.35`        | LOW      |
-| `0.35 – < 0.65` | ELEVATED |
-| `≥ 0.65`        | STRONG   |
+```text
+0                    35                    65                 100
+│────────────────────│─────────────────────│────────────────────│
+        LOW                 ELEVATED              STRONG
+```
 
----
-
-### Trend Detection
-
-| Change    | Trend   |
-| --------- | ------- |
-| `≥ +0.08` | RISING  |
-| `≤ -0.08` | FALLING |
-| Otherwise | STABLE  |
+| Smoothed score  | Level           |
+| :-------------- | :-------------- |
+| `< 0.35`        | 🟢 **LOW**      |
+| `0.35 – < 0.65` | 🟠 **ELEVATED** |
+| `≥ 0.65`        | 🔴 **STRONG**   |
 
 ---
 
-## API
+## 5. Trend detection
 
-### Health Check
+BioSignal compares the beginning and end of the smoothed timeline.
+
+| Signal Change | Result        |
+| :------------ | :------------ |
+| `≥ +0.08`     | ↑ **RISING**  |
+| `≤ -0.08`     | ↓ **FALLING** |
+| Otherwise     | → **STABLE**  |
+
+Example:
+
+```text
+14 → 22 → 38 → 51 → 72
+                      ↑
+                    RISING
+```
+
+---
+
+# 🧠 Explainable Signals
+
+BioSignal is designed to show **why** a score changed.
+
+Instead of returning only:
+
+```text
+72 / 100
+```
+
+the system can display explanations such as:
+
+```text
+Heart rate increased across the observed period.
+
+Temperature increased across the observed period.
+
+Lactate increased across the observed period.
+
+Lactate is one of the strongest contributors
+to the current signal.
+```
+
+The interface also displays the current contribution of each measurement.
+
+```text
+Lactate       █████████░  85%
+Temperature   ███████░░░  70%
+Heart Rate    ███████░░░  69%
+WBC           ██████░░░░  57%
+```
+
+---
+
+# 🕒 Measurement Timeline
+
+Measurements can be added sequentially using:
+
+```text
++ Add to Timeline
+```
+
+Example:
+
+```text
+14:10
+HR 82 · 36.8°C · WBC 7.4 · Lactate 1.0
+
+14:30
+HR 94 · 37.5°C · WBC 9.5 · Lactate 1.5
+
+14:50
+HR 105 · 38.0°C · WBC 11.5 · Lactate 2.1
+
+15:10
+HR 126 · 39.2°C · WBC 16 · Lactate 4.5
+```
+
+The full history is then sent to the backend when:
+
+```text
+Analyze Signal
+```
+
+is pressed.
+
+---
+
+# 🧪 Demo Scenarios
+
+BioSignal includes three demonstration patients.
+
+<table>
+<tr>
+<td width="33%" align="center">
+
+### 🟢 Stable Patient
+
+Mostly normal measurements with little variation.
+
+**Expected**
+
+`LOW`
+
+`→ STABLE`
+
+</td>
+
+<td width="33%" align="center">
+
+### 🟠 Rising Signal
+
+Measurements progressively worsen over time.
+
+**Expected**
+
+`LOW → ELEVATED → STRONG`
+
+`↑ RISING`
+
+</td>
+
+<td width="33%" align="center">
+
+### 🔴 Strong Signal
+
+Already elevated measurements progress toward a high warning score.
+
+**Expected**
+
+`STRONG`
+
+`↑ RISING`
+
+</td>
+</tr>
+</table>
+
+### Rising Signal example
+
+```text
+Heart Rate
+82 → 94 → 105 → 116 → 126
+
+Temperature
+37.0 → 37.5 → 38.0 → 38.7 → 39.2
+
+WBC
+8.0 → 9.5 → 11.5 → 14.0 → 16.0
+
+Lactate
+1.1 → 1.5 → 2.1 → 3.0 → 4.5
+```
+
+---
+
+# 🔌 API
+
+## Health Check
 
 ```http
 GET /health
@@ -447,7 +482,7 @@ Response:
 
 ---
 
-### Analyze One Measurement
+## Analyze one measurement
 
 ```http
 POST /predict
@@ -465,7 +500,7 @@ Content-Type: application/json
 
 ---
 
-### Analyze a Timeline
+## Analyze a timeline
 
 ```json
 {
@@ -492,17 +527,11 @@ Content-Type: application/json
 }
 ```
 
-The server currently accepts a maximum of:
-
-```text
-50 measurements
-```
-
-per request.
+BioSignal currently supports up to **50 measurements per request**.
 
 ---
 
-## Repository Structure
+# 📁 Repository Structure
 
 ```text
 HachatOwners/
@@ -526,124 +555,174 @@ HachatOwners/
 └── README.md
 ```
 
-| File                    | Purpose                                                     |
-| ----------------------- | ----------------------------------------------------------- |
-| `backend/algorithm.py`  | Measurement scoring and contributor calculation             |
-| `backend/server`        | HTTP server and API                                         |
-| `backend/signal_engine` | Smoothing, classification, trend detection and explanations |
-| `frontend/index.html`   | Dashboard structure                                         |
-| `frontend/style.css`    | Dashboard styling                                           |
-| `frontend/app.js`       | Timeline, demos, graph, API communication and animations    |
-| `assets/`               | Branding and visual resources                               |
+| Component               | Responsibility                                     |
+| :---------------------- | :------------------------------------------------- |
+| `backend/algorithm.py`  | Physiological scoring and contributors             |
+| `backend/server`        | HTTP server, static files and JSON API             |
+| `backend/signal_engine` | Smoothing, classification, trends and explanations |
+| `frontend/index.html`   | Dashboard structure                                |
+| `frontend/style.css`    | Visual design and responsive layout                |
+| `frontend/app.js`       | Timeline, API communication, animations and graph  |
+| `assets/`               | Branding and visual assets                         |
 
 ---
 
-## Technology Stack
+# 🛠️ Technology Stack
 
-| Layer             | Technology           |
-| ----------------- | -------------------- |
-| Backend           | Python 3             |
-| Web Server        | Python `http.server` |
-| API Format        | JSON                 |
-| Frontend          | HTML5                |
-| Styling           | CSS3                 |
-| Client Logic      | Vanilla JavaScript   |
-| Visualization     | SVG                  |
-| Database          | None                 |
-| External Packages | None                 |
+<div align="center">
 
-BioSignal intentionally avoids large frameworks.
+| Layer                 | Technology           |
+| :-------------------- | :------------------- |
+| **Backend**           | Python 3             |
+| **HTTP Server**       | Python `http.server` |
+| **API**               | JSON                 |
+| **Frontend**          | HTML5                |
+| **Styling**           | CSS3                 |
+| **Logic**             | Vanilla JavaScript   |
+| **Visualization**     | SVG                  |
+| **Database**          | None                 |
+| **External Packages** | None                 |
 
-No Flask.
+</div>
 
-No Django.
+### Zero-install design
 
-No React.
-
-No Node.js.
-
-No npm packages.
-
-No external chart library.
-
----
-
-## Running the Project
-
-### Requirements
-
-You need:
+BioSignal intentionally avoids unnecessary frameworks.
 
 ```text
-Python 3
-A modern web browser
+❌ Flask
+❌ Django
+❌ React
+❌ Node.js
+❌ npm
+❌ Chart libraries
+❌ Database
+
+✅ Python
+✅ HTML
+✅ CSS
+✅ JavaScript
+✅ SVG
 ```
 
-No additional packages are required.
+---
 
-### Start the server
+# ▶️ Running BioSignal
 
-From the repository root:
+## Requirements
+
+You only need:
+
+* **Python 3**
+* **A modern web browser**
+
+No packages need to be installed.
+
+---
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/laviniaichimm-blip/HachatOwners.git
+```
+
+```bash
+cd HachatOwners
+```
+
+---
+
+### 2. Start the server
 
 ```bash
 python backend/server
 ```
 
-Then open:
+On Windows you can also try:
+
+```bash
+py backend/server
+```
+
+---
+
+### 3. Open BioSignal
+
+Open:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-Health endpoint:
+in your browser.
+
+---
+
+### 4. Verify the backend
+
+Open:
 
 ```text
 http://127.0.0.1:8000/health
 ```
 
+Expected result:
+
+```json
+{
+  "status": "ok",
+  "service": "BioSignal"
+}
+```
+
 ---
 
-## Development Workflow
+# 🌿 Development
+
+```mermaid
+flowchart LR
+
+    A[feature/algorithm] --> D[develop]
+
+    B[feature/backend] --> D
+
+    C[feature/frontend] --> D
+
+    E[feature/integration] --> D
+
+    D --> T[Testing]
+
+    T --> M[main]
+```
 
 | Branch                | Responsibility                    |
-| --------------------- | --------------------------------- |
+| :-------------------- | :-------------------------------- |
 | `feature/algorithm`   | Physiological scoring             |
 | `feature/backend`     | HTTP server and API               |
 | `feature/frontend`    | Dashboard                         |
 | `feature/integration` | Signal processing and integration |
-| `develop`             | Integrated development version    |
+| `develop`             | Combined development version      |
 | `main`                | Stable version                    |
-
-```text
-feature/*
-    ↓
- develop
-    ↓
- testing
-    ↓
-   main
-```
 
 ---
 
-## Important Limitations
+# ⚠️ Important Limitations
 
-BioSignal is a **research and educational prototype**.
+> [!CAUTION]
+> BioSignal is an **educational and research prototype**.
 
-It is not:
+BioSignal is **not**:
 
 * a medical device;
 * a diagnostic tool;
 * a clinically validated early-warning system;
-* a validated sepsis probability calculator;
+* a validated sepsis calculator;
 * intended for real patient-care decisions;
-* a substitute for professional medical judgment.
+* a replacement for medical professionals.
 
-A displayed score such as:
+A result such as:
 
-```text
-80 / 100
-```
+# `80 / 100`
 
 means:
 
@@ -651,38 +730,48 @@ means:
 
 It does **not** mean:
 
-> **80% probability of sepsis**
+> **80% probability of sepsis.**
 
-or an 80% probability of another medical condition.
+The current scoring thresholds, interpolation curves, weights, smoothing parameters and trend rules are prototype engineering decisions.
 
-The current thresholds, interpolation curves, weights, smoothing rules and trend rules are prototype engineering choices and require clinical validation before medical use.
+Clinical use would require appropriate medical review, validation and regulatory consideration.
 
 ---
 
-## Future Development
+# 🔮 Future Development
 
-Possible future improvements include:
+Potential improvements include:
 
-* validation using physiological datasets;
 * clinically reviewed scoring methodology;
-* additional physiological measurements;
+* validation against appropriate physiological datasets;
+* additional physiological variables;
 * real-time sensor input;
-* longer timelines;
+* longer patient timelines;
+* configurable signal smoothing;
+* advanced trend analysis;
 * anomaly detection;
-* configurable smoothing;
-* improved trend analysis;
-* automated testing;
-* exportable reports;
-* accessibility improvements.
+* automated tests;
+* report export;
+* improved accessibility;
+* deployment packaging.
 
 ---
 
 <div align="center">
 
-## BioSignal
+<br>
 
-### From measurements to signals. From signals to understanding.
+# 🫀 BioSignal
 
-**Research prototype — not a medical diagnosis.**
+### **From measurements to signals. From signals to understanding.**
+
+<br>
+
+`RESEARCH PROTOTYPE` • `EXPLAINABLE` • `LIGHTWEIGHT` • `ZERO-INSTALL`
+
+<br>
+
+**Not a medical diagnosis.**
 
 </div>
+
