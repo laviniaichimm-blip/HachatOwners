@@ -15,6 +15,17 @@
 * {
     box-sizing: border-box;
 }
+body {
+    background:
+        linear-gradient(
+            rgba(7, 17, 31, 0.94),
+            rgba(7, 17, 31, 0.94)
+        ),
+        url("/assets/bg-pattern.svg");
+
+    background-color: #07111f;
+    background-size: auto, 600px 600px;
+}
 
 html {
     scroll-behavior: smooth;
