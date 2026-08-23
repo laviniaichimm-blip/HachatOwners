@@ -17,21 +17,22 @@
     >
 </head>
 
+
 <body>
 
 <div class="page-shell">
 
-    <!-- HEADER -->
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
     <header class="topbar">
 
         <div class="brand-row">
 
-            <img
-                src="/assets/logo.svg"
-                alt="BioSignal logo"
-                class="logo"
-            >
+            <div class="brand-logo">
+                <span class="brand-pulse">⌁</span>
+            </div>
 
             <div>
                 <h1>BioSignal</h1>
@@ -51,10 +52,13 @@
     </header>
 
 
+
     <main class="dashboard">
 
 
-        <!-- ALERT -->
+        <!-- =====================================================
+             ALERT
+        ====================================================== -->
 
         <section
             id="alertBanner"
@@ -66,7 +70,6 @@
             </div>
 
             <div>
-
                 <strong id="alertTitle">
                     Signal detected
                 </strong>
@@ -74,14 +77,15 @@
                 <p id="alertText">
                     BioSignal has detected a change.
                 </p>
-
             </div>
 
         </section>
 
 
 
-        <!-- MAIN SIGNAL CARD -->
+        <!-- =====================================================
+             MAIN SIGNAL
+        ====================================================== -->
 
         <section class="hero-card panel">
 
@@ -137,10 +141,7 @@
 
 
 
-            <!-- CURRENT MEASUREMENTS -->
-
             <div class="hero-side">
-
 
                 <div class="hero-side-card">
 
@@ -227,7 +228,9 @@
 
 
 
-        <!-- BIGGEST CHANGE -->
+        <!-- =====================================================
+             MOST IMPORTANT CHANGE
+        ====================================================== -->
 
         <section class="insight-card panel">
 
@@ -256,7 +259,9 @@
 
 
 
-        <!-- GRAPH -->
+        <!-- =====================================================
+             MAIN SIGNAL GRAPH
+        ====================================================== -->
 
         <section class="panel graph-panel">
 
@@ -373,12 +378,14 @@
 
 
 
-        <!-- INPUT + EXPLANATION -->
+        <!-- =====================================================
+             PATIENT DATA + EXPLANATION
+        ====================================================== -->
 
         <section class="two-column">
 
 
-            <!-- INPUT -->
+            <!-- PATIENT DATA -->
 
             <div class="panel content-panel">
 
@@ -400,7 +407,6 @@
 
 
                 <div class="form-grid">
-
 
                     <label>
 
@@ -495,6 +501,7 @@
 
                     <button
                         class="secondary-button"
+                        type="button"
                         onclick="addMeasurement()"
                     >
                         + Add to Timeline
@@ -503,6 +510,7 @@
 
                     <button
                         class="primary-button"
+                        type="button"
                         onclick="analyzeHistory()"
                     >
                         Analyze Signal
@@ -513,6 +521,7 @@
 
                 <button
                     class="new-patient-button"
+                    type="button"
                     onclick="clearHistory()"
                 >
                     Reset / New Patient
@@ -580,7 +589,6 @@
                 </div>
 
 
-
                 <div class="contributors">
 
                     <p class="eyebrow">
@@ -595,12 +603,10 @@
                         </span>
 
                         <div class="bar-track">
-
                             <div
                                 id="barHr"
                                 class="bar-fill"
                             ></div>
-
                         </div>
 
                         <strong id="valueHr">
@@ -617,12 +623,10 @@
                         </span>
 
                         <div class="bar-track">
-
                             <div
                                 id="barTemperature"
                                 class="bar-fill"
                             ></div>
-
                         </div>
 
                         <strong id="valueTemperature">
@@ -639,12 +643,10 @@
                         </span>
 
                         <div class="bar-track">
-
                             <div
                                 id="barWbc"
                                 class="bar-fill"
                             ></div>
-
                         </div>
 
                         <strong id="valueWbc">
@@ -661,12 +663,10 @@
                         </span>
 
                         <div class="bar-track">
-
                             <div
                                 id="barLactate"
                                 class="bar-fill"
                             ></div>
-
                         </div>
 
                         <strong id="valueLactate">
@@ -683,7 +683,479 @@
 
 
 
-        <!-- DEMOS -->
+        <!-- =====================================================
+             QUICK TOOLS + VITALS EXPLORER
+        ====================================================== -->
+
+        <section class="interactive-grid">
+
+
+            <!-- QUICK CONTROLS -->
+
+            <div class="panel interactive-panel">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            QUICK CONTROLS
+                        </p>
+
+                        <h2>
+                            Interactive Tools
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <p class="interactive-description">
+                    Quickly modify or replay your patient timeline.
+                </p>
+
+
+                <div class="quick-actions">
+
+                    <button
+                        class="quick-button quick-primary"
+                        type="button"
+                        onclick="addAndAnalyze()"
+                    >
+                        ⚡ Add + Analyze
+                    </button>
+
+
+                    <button
+                        class="quick-button"
+                        type="button"
+                        onclick="undoLastMeasurement()"
+                    >
+                        ↶ Undo Last
+                    </button>
+
+
+                    <button
+                        class="quick-button"
+                        type="button"
+                        onclick="duplicateLastMeasurement()"
+                    >
+                        ⧉ Duplicate Last
+                    </button>
+
+
+                    <button
+                        id="replayButton"
+                        class="quick-button"
+                        type="button"
+                        onclick="replayTimeline()"
+                    >
+                        ▶ Replay Timeline
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- VITALS EXPLORER -->
+
+            <div class="panel interactive-panel">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            INTERACTIVE CHART
+                        </p>
+
+                        <h2>
+                            Vitals Explorer
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-tabs">
+
+                    <button
+                        class="chart-tab active"
+                        type="button"
+                        onclick="setExplorerMetric('score', this)"
+                    >
+                        BioSignal
+                    </button>
+
+                    <button
+                        class="chart-tab"
+                        type="button"
+                        onclick="setExplorerMetric('hr', this)"
+                    >
+                        Heart Rate
+                    </button>
+
+                    <button
+                        class="chart-tab"
+                        type="button"
+                        onclick="setExplorerMetric('temperature', this)"
+                    >
+                        Temperature
+                    </button>
+
+                    <button
+                        class="chart-tab"
+                        type="button"
+                        onclick="setExplorerMetric('wbc', this)"
+                    >
+                        WBC
+                    </button>
+
+                    <button
+                        class="chart-tab"
+                        type="button"
+                        onclick="setExplorerMetric('lactate', this)"
+                    >
+                        Lactate
+                    </button>
+
+                </div>
+
+
+                <div class="explorer-heading">
+
+                    <strong id="explorerTitle">
+                        BioSignal Warning Score
+                    </strong>
+
+                    <span id="explorerRange">
+                        No data
+                    </span>
+
+                </div>
+
+
+                <div class="explorer-chart">
+
+                    <svg
+                        id="vitalsChart"
+                        viewBox="0 0 700 240"
+                        role="img"
+                        aria-label="Interactive patient measurement chart"
+                    >
+
+                        <line
+                            x1="25"
+                            y1="215"
+                            x2="680"
+                            y2="215"
+                            class="explorer-axis"
+                        ></line>
+
+                        <line
+                            x1="25"
+                            y1="20"
+                            x2="25"
+                            y2="215"
+                            class="explorer-axis"
+                        ></line>
+
+
+                        <polyline
+                            id="vitalsLine"
+                            points=""
+                            class="explorer-line"
+                        ></polyline>
+
+
+                        <g id="vitalsPoints"></g>
+
+                    </svg>
+
+
+                    <div
+                        id="vitalsTimeLabels"
+                        class="explorer-times"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             SYMPTOMS + NEXT STEP
+        ====================================================== -->
+
+        <section class="two-column">
+
+
+            <!-- SYMPTOMS -->
+
+            <div class="panel content-panel">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            PATIENT CONTEXT
+                        </p>
+
+                        <h2>
+                            Symptoms
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <p class="interactive-description">
+                    Select symptoms currently present.
+                    Symptoms do not change the BioSignal score.
+                </p>
+
+
+                <div class="symptom-grid">
+
+                    <label class="symptom-chip">
+
+                        <input
+                            type="checkbox"
+                            data-red-flag
+                            onchange="updateNextStep()"
+                        >
+
+                        <span>
+                            🧠 Confusion / unusual speech
+                        </span>
+
+                    </label>
+
+
+                    <label class="symptom-chip">
+
+                        <input
+                            type="checkbox"
+                            data-red-flag
+                            onchange="updateNextStep()"
+                        >
+
+                        <span>
+                            🫁 Severe difficulty breathing
+                        </span>
+
+                    </label>
+
+
+                    <label class="symptom-chip">
+
+                        <input
+                            type="checkbox"
+                            data-red-flag
+                            onchange="updateNextStep()"
+                        >
+
+                        <span>
+                            🔵 Blue, grey, pale or blotchy skin
+                        </span>
+
+                    </label>
+
+
+                    <label class="symptom-chip">
+
+                        <input
+                            type="checkbox"
+                            data-red-flag
+                            onchange="updateNextStep()"
+                        >
+
+                        <span>
+                            😴 Very difficult to wake
+                        </span>
+
+                    </label>
+
+
+                    <label class="symptom-chip">
+
+                        <input
+                            type="checkbox"
+                            data-red-flag
+                            onchange="updateNextStep()"
+                        >
+
+                        <span>
+                            🚱 Very little or no urine
+                        </span>
+
+                    </label>
+
+
+                    <label class="symptom-chip">
+
+                        <input
+                            type="checkbox"
+                            data-concerning
+                            onchange="updateNextStep()"
+                        >
+
+                        <span>
+                            🥶 Fever / severe shivering
+                        </span>
+
+                    </label>
+
+
+                    <label class="symptom-chip">
+
+                        <input
+                            type="checkbox"
+                            data-concerning
+                            onchange="updateNextStep()"
+                        >
+
+                        <span>
+                            💥 Severe pain or discomfort
+                        </span>
+
+                    </label>
+
+
+                    <label class="symptom-chip">
+
+                        <input
+                            type="checkbox"
+                            data-concerning
+                            onchange="updateNextStep()"
+                        >
+
+                        <span>
+                            💧 Clammy / sweaty skin
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <button
+                    class="secondary-button clear-symptoms"
+                    type="button"
+                    onclick="clearSymptoms()"
+                >
+                    Clear Symptoms
+                </button>
+
+            </div>
+
+
+
+            <!-- NEXT STEP -->
+
+            <div class="panel content-panel">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            GUIDANCE
+                        </p>
+
+                        <h2>
+                            What Should I Do Next?
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="nextStepCard"
+                    class="next-step-card next-neutral"
+                >
+
+                    <span
+                        id="nextStepIcon"
+                        class="next-step-icon"
+                    >
+                        ○
+                    </span>
+
+
+                    <div>
+
+                        <strong id="nextStepTitle">
+                            Run an analysis
+                        </strong>
+
+                        <p id="nextStepText">
+                            Enter measurements or choose a demo
+                            patient to generate contextual guidance.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="medicine-button"
+                    type="button"
+                    onclick="toggleMedicationSafety()"
+                >
+                    💊 Medication Information
+                </button>
+
+
+                <div
+                    id="medicationSafety"
+                    class="medication-safety interactive-hidden"
+                >
+
+                    <strong>
+                        BioSignal does not recommend medication.
+                    </strong>
+
+                    <p>
+                        Medication decisions depend on the underlying
+                        cause, medical history, examination and
+                        appropriate clinical testing.
+                    </p>
+
+                    <p>
+                        Do not start antibiotics or other prescription
+                        medication based on this prototype.
+                    </p>
+
+                </div>
+
+
+                <p class="medical-disclaimer">
+                    BioSignal is an educational research prototype.
+                    It cannot diagnose illness or determine treatment.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             DEMOS
+        ====================================================== -->
 
         <section class="panel demo-panel">
 
@@ -706,11 +1178,15 @@
 
             <div class="demo-grid">
 
-
                 <button
                     class="demo-card"
+                    type="button"
                     onclick="loadDemo('stable')"
                 >
+
+                    <span class="demo-icon">
+                        ✓
+                    </span>
 
                     <span class="demo-kicker">
                         DEMO 01
@@ -728,11 +1204,15 @@
                 </button>
 
 
-
                 <button
                     class="demo-card"
+                    type="button"
                     onclick="loadDemo('rising')"
                 >
+
+                    <span class="demo-icon">
+                        ↗
+                    </span>
 
                     <span class="demo-kicker">
                         DEMO 02
@@ -750,11 +1230,15 @@
                 </button>
 
 
-
                 <button
                     class="demo-card"
+                    type="button"
                     onclick="loadDemo('strong')"
                 >
+
+                    <span class="demo-icon">
+                        !
+                    </span>
 
                     <span class="demo-kicker">
                         DEMO 03
@@ -775,9 +1259,13 @@
 
         </section>
 
-
     </main>
 
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
 
     <footer>
 
@@ -785,11 +1273,11 @@
             BioSignal Research Prototype
         </strong>
 
-        <br>
-
-        Not a medical diagnosis.
-        The displayed value is a BioSignal warning score,
-        not a clinically validated probability of sepsis.
+        <p>
+            Not a medical diagnosis.
+            The displayed value is a BioSignal warning score,
+            not a clinically validated probability of sepsis.
+        </p>
 
     </footer>
 
