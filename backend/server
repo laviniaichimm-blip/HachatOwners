@@ -1,46 +1,46 @@
-from http.server import (
-    BaseHTTPRequestHandler,
-    HTTPServer
-)
-
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
-
+from urllib.parse import urlparse
 import json
 import mimetypes
 
 from algorithm import analyze_patient
+from signal_engine import build_signal_summary
 
-from signal_engine import (
-    build_signal_summary
-)
 
+# ---------------------------------------------------------
+# SERVER SETTINGS
+# ---------------------------------------------------------
 
 HOST = "127.0.0.1"
 PORT = 8000
 
 
-PROJECT_ROOT = (
-    Path(__file__)
-    .resolve()
-    .parent
-    .parent
-)
+# ---------------------------------------------------------
+# PROJECT FOLDERS
+# ---------------------------------------------------------
 
-FRONTEND_DIR = (
-    PROJECT_ROOT
-    / "frontend"
-)
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
+FRONTEND_DIR = PROJECT_ROOT / "frontend"
+ASSETS_DIR = PROJECT_ROOT / "assets"
+
+
+# ---------------------------------------------------------
+# HTTP SERVER
+# ---------------------------------------------------------
 
 class Server(BaseHTTPRequestHandler):
 
-    def send_json(
-        self,
-        data,
-        status=200
-    ):
+    # -----------------------------------------------------
+    # SEND JSON
+    # -----------------------------------------------------
+
+    def send_json(self, data, status=200):
+
         body = json.dumps(
-            data
+            data,
+            indent=2
         ).encode("utf-8")
 
         self.send_response(status)
@@ -70,17 +70,22 @@ class Server(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
 
-    def send_file(
-        self,
-        file_path
-    ):
+    # -----------------------------------------------------
+    # SEND STATIC FILE
+    # -----------------------------------------------------
+
+    def send_file(self, file_path):
+
+        file_path = Path(file_path)
+
         if (
             not file_path.exists()
             or not file_path.is_file()
         ):
+
             self.send_json(
                 {
-                    "error": "Not found"
+                    "error": "File not found"
                 },
                 404
             )
@@ -88,41 +93,65 @@ class Server(BaseHTTPRequestHandler):
             return
 
 
-        content = (
-            file_path.read_bytes()
-        )
+        try:
+
+            content = file_path.read_bytes()
 
 
-        content_type, _ = (
-            mimetypes.guess_type(
+            content_type, _ = mimetypes.guess_type(
                 str(file_path)
             )
-        )
 
 
-        if content_type is None:
+            if content_type is None:
 
-            content_type = (
-                "application/octet-stream"
+                content_type = (
+                    "application/octet-stream"
+                )
+
+
+            # Make sure SVG files render correctly
+            if file_path.suffix.lower() == ".svg":
+
+                content_type = "image/svg+xml"
+
+
+            self.send_response(200)
+
+            self.send_header(
+                "Content-Type",
+                content_type
+            )
+
+            self.send_header(
+                "Content-Length",
+                str(len(content))
+            )
+
+            self.send_header(
+                "Cache-Control",
+                "no-cache"
+            )
+
+            self.end_headers()
+
+            self.wfile.write(content)
+
+
+        except Exception as error:
+
+            self.send_json(
+                {
+                    "error": "Could not read file",
+                    "details": str(error)
+                },
+                500
             )
 
 
-        self.send_response(200)
-
-        self.send_header(
-            "Content-Type",
-            content_type
-        )
-
-        self.send_header(
-            "Content-Length",
-            str(len(content))
-        )
-
-        self.end_headers()
-
-        self.wfile.write(content)
-
+    # -----------------------------------------------------
+    # OPTIONS
+    # -----------------------------------------------------
 
     def do_OPTIONS(self):
 
@@ -146,50 +175,134 @@ class Server(BaseHTTPRequestHandler):
         self.end_headers()
 
 
+    # -----------------------------------------------------
+    # GET
+    # -----------------------------------------------------
+
     def do_GET(self):
 
-        if self.path == "/health":
+        path = urlparse(self.path).path
 
-            self.send_json({
-                "status": "ok",
-                "service": "BioSignal",
-            })
+
+        # ---------------------------------------------
+        # API health check
+        # ---------------------------------------------
+
+        if path == "/health":
+
+            self.send_json(
+                {
+                    "status": "ok",
+                    "service": "BioSignal"
+                }
+            )
 
             return
 
 
-        if self.path in (
+        # ---------------------------------------------
+        # Main frontend page
+        # ---------------------------------------------
+
+        if path in (
             "/",
             "/index.html"
         ):
 
             self.send_file(
-                FRONTEND_DIR
-                / "index.html"
+                FRONTEND_DIR / "index.html"
             )
 
             return
 
 
-        if self.path == "/style.css":
+        # ---------------------------------------------
+        # CSS
+        # ---------------------------------------------
+
+        if path == "/style.css":
 
             self.send_file(
-                FRONTEND_DIR
-                / "style.css"
+                FRONTEND_DIR / "style.css"
             )
 
             return
 
 
-        if self.path == "/app.js":
+        # ---------------------------------------------
+        # JavaScript
+        # ---------------------------------------------
+
+        if path == "/app.js":
 
             self.send_file(
-                FRONTEND_DIR
-                / "app.js"
+                FRONTEND_DIR / "app.js"
             )
 
             return
 
+
+        # ---------------------------------------------
+        # ASSETS
+        #
+        # Example:
+        # /assets/logo.svg
+        # /assets/background.png
+        # /assets/icons/heart.svg
+        # ---------------------------------------------
+
+        if path.startswith("/assets/"):
+
+            relative_path = path[
+                len("/assets/"):
+            ]
+
+
+            requested_file = (
+                ASSETS_DIR
+                / relative_path
+            ).resolve()
+
+
+            assets_root = (
+                ASSETS_DIR.resolve()
+            )
+
+
+            # Security:
+            # Prevent things such as:
+            #
+            # /assets/../backend/server.py
+
+            try:
+
+                requested_file.relative_to(
+                    assets_root
+                )
+
+            except ValueError:
+
+                self.send_json(
+                    {
+                        "error":
+                            "Invalid asset path"
+                    },
+                    403
+                )
+
+                return
+
+
+            self.send_file(
+                requested_file
+            )
+
+            return
+
+
+        # ---------------------------------------------
+        # NOT FOUND
+        # ---------------------------------------------
 
         self.send_json(
             {
@@ -199,9 +312,17 @@ class Server(BaseHTTPRequestHandler):
         )
 
 
+    # -----------------------------------------------------
+    # POST
+    # -----------------------------------------------------
+
     def do_POST(self):
 
-        if self.path != "/predict":
+        path = urlparse(self.path).path
+
+
+        # Only POST endpoint
+        if path != "/predict":
 
             self.send_json(
                 {
@@ -215,6 +336,10 @@ class Server(BaseHTTPRequestHandler):
 
         try:
 
+            # -----------------------------------------
+            # Read request
+            # -----------------------------------------
+
             length = int(
                 self.headers.get(
                     "Content-Length",
@@ -223,16 +348,16 @@ class Server(BaseHTTPRequestHandler):
             )
 
 
-            body = self.rfile.read(
-                length
-            )
-
-
-            if not body:
+            if length <= 0:
 
                 raise ValueError(
                     "Request body is empty"
                 )
+
+
+            body = self.rfile.read(
+                length
+            )
 
 
             data = json.loads(
@@ -240,39 +365,53 @@ class Server(BaseHTTPRequestHandler):
             )
 
 
+            # -----------------------------------------
+            # Read measurement history
+            # -----------------------------------------
+
             history = data.get(
                 "history"
             )
 
 
+            # Also support a single measurement
             if history is None:
 
-                history = [{
-                    "hr":
-                        data["hr"],
+                history = [
+                    {
+                        "hr":
+                            data["hr"],
 
-                    "temperature":
-                        data["temperature"],
+                        "temperature":
+                            data["temperature"],
 
-                    "wbc":
-                        data["wbc"],
+                        "wbc":
+                            data["wbc"],
 
-                    "lactate":
-                        data["lactate"],
-                }]
+                        "lactate":
+                            data["lactate"]
+                    }
+                ]
 
 
-            if (
-                not isinstance(
-                    history,
-                    list
-                )
-                or len(history) == 0
+            # -----------------------------------------
+            # Validate history
+            # -----------------------------------------
+
+            if not isinstance(
+                history,
+                list
             ):
 
                 raise ValueError(
-                    "history must be "
-                    "a non-empty list"
+                    "history must be a list"
+                )
+
+
+            if len(history) == 0:
+
+                raise ValueError(
+                    "history cannot be empty"
                 )
 
 
@@ -284,12 +423,26 @@ class Server(BaseHTTPRequestHandler):
                 )
 
 
-            normalized_history = []
+            # -----------------------------------------
+            # Analyze every measurement
+            # -----------------------------------------
 
+            normalized_history = []
             analyses = []
 
 
             for point in history:
+
+                if not isinstance(
+                    point,
+                    dict
+                ):
+
+                    raise ValueError(
+                        "Each measurement "
+                        "must be an object"
+                    )
+
 
                 measurement = {
 
@@ -315,19 +468,23 @@ class Server(BaseHTTPRequestHandler):
                             point[
                                 "lactate"
                             ]
-                        ),
+                        )
                 }
 
 
                 analysis = analyze_patient(
+
                     measurement["hr"],
+
                     measurement[
                         "temperature"
                     ],
+
                     measurement["wbc"],
+
                     measurement[
                         "lactate"
-                    ],
+                    ]
                 )
 
 
@@ -340,29 +497,38 @@ class Server(BaseHTTPRequestHandler):
                 )
 
 
-            summary = (
-                build_signal_summary(
-                    normalized_history,
-                    analyses,
-                )
+            # -----------------------------------------
+            # Signal engine
+            # -----------------------------------------
+
+            summary = build_signal_summary(
+
+                normalized_history,
+
+                analyses
             )
 
 
-            current = (
+            current_measurement = (
                 normalized_history[-1]
             )
+
 
             current_analysis = (
                 analyses[-1]
             )
 
 
+            # -----------------------------------------
+            # Final API response
+            # -----------------------------------------
+
             response = {
 
                 **summary,
 
                 "current":
-                    current,
+                    current_measurement,
 
                 "contributors":
                     current_analysis[
@@ -381,7 +547,7 @@ class Server(BaseHTTPRequestHandler):
                         "is not a medical diagnosis "
                         "or a clinically validated "
                         "probability."
-                    ),
+                    )
             }
 
 
@@ -389,6 +555,10 @@ class Server(BaseHTTPRequestHandler):
                 response
             )
 
+
+        # ---------------------------------------------
+        # USER / INPUT ERRORS
+        # ---------------------------------------------
 
         except (
             KeyError,
@@ -405,6 +575,10 @@ class Server(BaseHTTPRequestHandler):
             )
 
 
+        # ---------------------------------------------
+        # SERVER ERROR
+        # ---------------------------------------------
+
         except Exception as error:
 
             self.send_json(
@@ -413,21 +587,33 @@ class Server(BaseHTTPRequestHandler):
                         "Unexpected server error",
 
                     "details":
-                        str(error),
+                        str(error)
                 },
                 500
             )
 
 
+# ---------------------------------------------------------
+# START SERVER
+# ---------------------------------------------------------
+
 if __name__ == "__main__":
 
+    print()
+    print("=" * 45)
+    print("           BioSignal")
+    print("=" * 45)
+    print()
+    print("BioSignal server is running.")
+    print()
     print(
-        "BioSignal running"
+        f"Open: http://{HOST}:{PORT}"
     )
-
+    print()
     print(
-        f"http://{HOST}:{PORT}"
+        "Press CTRL + C to stop the server."
     )
+    print()
 
 
     server = HTTPServer(
@@ -443,11 +629,14 @@ if __name__ == "__main__":
 
         server.serve_forever()
 
+
     except KeyboardInterrupt:
 
+        print()
         print(
-            "\nBioSignal stopped."
+            "BioSignal server stopped."
         )
+
 
     finally:
 
