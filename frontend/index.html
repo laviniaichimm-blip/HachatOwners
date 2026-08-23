@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
 
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="BioSignal — Physiological Early Signal Analysis"
     >
 
     <title>BioSignal</title>
@@ -17,13 +21,14 @@
     >
 </head>
 
-
 <body>
 
 <div class="page-shell">
 
+    <!-- ===================================================== -->
+    <!-- HEADER -->
+    <!-- ===================================================== -->
 
-    <!-- TOP BAR -->
     <header class="topbar">
 
         <div class="brand-row">
@@ -34,12 +39,16 @@
                 class="logo"
             >
 
-            <div>
-                <h1>BioSignal</h1>
+            <div class="brand-text">
+
+                <h1>
+                    BioSignal
+                </h1>
 
                 <p class="brand-subtitle">
                     Physiological Early Signal Analysis
                 </p>
+
             </div>
 
         </div>
@@ -52,11 +61,17 @@
     </header>
 
 
+    <!-- ===================================================== -->
+    <!-- MAIN DASHBOARD -->
+    <!-- ===================================================== -->
 
     <main class="dashboard">
 
 
-        <!-- MAIN SCORE -->
+        <!-- ================================================= -->
+        <!-- CURRENT SIGNAL -->
+        <!-- ================================================= -->
+
         <section class="hero-card panel">
 
             <div class="hero-copy">
@@ -103,15 +118,15 @@
                     id="statusText"
                     class="status-text"
                 >
-                    Choose a demo patient or enter
-                    a measurement history.
+                    Choose a patient scenario or enter
+                    your own measurement timeline.
                 </p>
 
             </div>
 
 
+            <!-- CURRENT MEASUREMENTS -->
 
-            <!-- CURRENT VALUES -->
             <div class="hero-side">
 
                 <div class="hero-side-card">
@@ -170,8 +185,10 @@
         </section>
 
 
+        <!-- ================================================= -->
+        <!-- SIGNAL GRAPH -->
+        <!-- ================================================= -->
 
-        <!-- GRAPH -->
         <section class="panel graph-panel">
 
             <div class="section-heading">
@@ -199,8 +216,10 @@
             </div>
 
 
-
             <div class="chart-wrap">
+
+
+                <!-- Y AXIS -->
 
                 <div class="y-labels">
 
@@ -213,11 +232,13 @@
                 </div>
 
 
+                <!-- SVG GRAPH -->
+
                 <svg
                     id="signalChart"
                     viewBox="0 0 700 260"
                     role="img"
-                    aria-label="BioSignal history chart"
+                    aria-label="BioSignal warning score history"
                 >
 
                     <line
@@ -277,12 +298,17 @@
         </section>
 
 
-
+        <!-- ================================================= -->
         <!-- INPUT + EXPLANATION -->
+        <!-- ================================================= -->
+
         <section class="two-column">
 
 
-            <!-- INPUT -->
+            <!-- ============================================= -->
+            <!-- PATIENT INPUT -->
+            <!-- ============================================= -->
+
             <div class="panel">
 
                 <div class="section-heading">
@@ -302,9 +328,10 @@
                 </div>
 
 
-
                 <div class="form-grid">
 
+
+                    <!-- HEART RATE -->
 
                     <label>
 
@@ -328,6 +355,7 @@
                     </label>
 
 
+                    <!-- TEMPERATURE -->
 
                     <label>
 
@@ -351,6 +379,7 @@
                     </label>
 
 
+                    <!-- WBC -->
 
                     <label>
 
@@ -374,6 +403,7 @@
                     </label>
 
 
+                    <!-- LACTATE -->
 
                     <label>
 
@@ -399,18 +429,21 @@
                 </div>
 
 
+                <!-- ACTION BUTTONS -->
 
                 <div class="input-actions">
 
                     <button
+                        type="button"
                         class="secondary-button"
                         onclick="addMeasurement()"
                     >
-                        + Add to timeline
+                        + Add to Timeline
                     </button>
 
 
                     <button
+                        type="button"
                         class="primary-button"
                         onclick="analyzeHistory()"
                     >
@@ -420,6 +453,7 @@
                 </div>
 
 
+                <!-- TIMELINE PREVIEW -->
 
                 <div class="history-box">
 
@@ -429,7 +463,9 @@
                             Measurement Timeline
                         </span>
 
+
                         <button
+                            type="button"
                             class="text-button"
                             onclick="clearHistory()"
                         >
@@ -451,8 +487,10 @@
             </div>
 
 
-
+            <!-- ============================================= -->
             <!-- EXPLANATION -->
+            <!-- ============================================= -->
+
             <div class="panel">
 
                 <div class="section-heading">
@@ -472,6 +510,7 @@
                 </div>
 
 
+                <!-- REASONS -->
 
                 <div
                     id="reasons"
@@ -479,12 +518,15 @@
                 >
 
                     <div class="reason-item muted">
+
                         Analysis reasons will appear here.
+
                     </div>
 
                 </div>
 
 
+                <!-- CONTRIBUTION BARS -->
 
                 <div class="contributors">
 
@@ -493,11 +535,14 @@
                     </p>
 
 
+                    <!-- HEART RATE -->
+
                     <div class="contributor-row">
 
                         <span>
                             Heart rate
                         </span>
+
 
                         <div class="bar-track">
 
@@ -508,6 +553,7 @@
 
                         </div>
 
+
                         <strong id="valueHr">
                             --
                         </strong>
@@ -515,12 +561,14 @@
                     </div>
 
 
+                    <!-- TEMPERATURE -->
 
                     <div class="contributor-row">
 
                         <span>
                             Temperature
                         </span>
+
 
                         <div class="bar-track">
 
@@ -531,6 +579,7 @@
 
                         </div>
 
+
                         <strong id="valueTemperature">
                             --
                         </strong>
@@ -538,12 +587,14 @@
                     </div>
 
 
+                    <!-- WBC -->
 
                     <div class="contributor-row">
 
                         <span>
                             WBC
                         </span>
+
 
                         <div class="bar-track">
 
@@ -554,6 +605,7 @@
 
                         </div>
 
+
                         <strong id="valueWbc">
                             --
                         </strong>
@@ -561,12 +613,14 @@
                     </div>
 
 
+                    <!-- LACTATE -->
 
                     <div class="contributor-row">
 
                         <span>
                             Lactate
                         </span>
+
 
                         <div class="bar-track">
 
@@ -576,6 +630,7 @@
                             ></div>
 
                         </div>
+
 
                         <strong id="valueLactate">
                             --
@@ -590,8 +645,10 @@
         </section>
 
 
+        <!-- ================================================= -->
+        <!-- DEMO PATIENTS -->
+        <!-- ================================================= -->
 
-        <!-- DEMOS -->
         <section class="panel demo-panel">
 
             <div class="section-heading">
@@ -599,7 +656,7 @@
                 <div>
 
                     <p class="eyebrow">
-                        LIVE DEMOS
+                        LIVE DEMONSTRATION
                     </p>
 
                     <h2>
@@ -611,11 +668,13 @@
             </div>
 
 
-
             <div class="demo-grid">
 
 
+                <!-- STABLE -->
+
                 <button
+                    type="button"
                     class="demo-card"
                     onclick="loadDemo('stable')"
                 >
@@ -624,20 +683,24 @@
                         DEMO 01
                     </span>
 
+
                     <strong>
                         Stable Patient
                     </strong>
 
+
                     <small>
                         Mostly normal measurements
-                        with a stable BioSignal.
+                        with little variation over time.
                     </small>
 
                 </button>
 
 
+                <!-- RISING -->
 
                 <button
+                    type="button"
                     class="demo-card"
                     onclick="loadDemo('rising')"
                 >
@@ -646,20 +709,24 @@
                         DEMO 02
                     </span>
 
+
                     <strong>
                         Rising Signal
                     </strong>
 
+
                     <small>
                         Measurements progressively
-                        change across the timeline.
+                        change and the warning score rises.
                     </small>
 
                 </button>
 
 
+                <!-- STRONG -->
 
                 <button
+                    type="button"
                     class="demo-card"
                     onclick="loadDemo('strong')"
                 >
@@ -668,9 +735,11 @@
                         DEMO 03
                     </span>
 
+
                     <strong>
                         Strong Signal
                     </strong>
+
 
                     <small>
                         Demonstrates a high
@@ -684,26 +753,115 @@
         </section>
 
 
+        <!-- ================================================= -->
+        <!-- HOW IT WORKS -->
+        <!-- ================================================= -->
+
+        <section class="panel demo-panel">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <p class="eyebrow">
+                        SYSTEM FLOW
+                    </p>
+
+                    <h2>
+                        How BioSignal Works
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="demo-grid">
+
+
+                <div class="demo-card">
+
+                    <span class="demo-kicker">
+                        01
+                    </span>
+
+                    <strong>
+                        Measurements
+                    </strong>
+
+                    <small>
+                        Heart rate, temperature,
+                        WBC and lactate are entered
+                        as a timeline.
+                    </small>
+
+                </div>
+
+
+                <div class="demo-card">
+
+                    <span class="demo-kicker">
+                        02
+                    </span>
+
+                    <strong>
+                        Signal Processing
+                    </strong>
+
+                    <small>
+                        The backend calculates
+                        a prototype warning score
+                        and smooths changes over time.
+                    </small>
+
+                </div>
+
+
+                <div class="demo-card">
+
+                    <span class="demo-kicker">
+                        03
+                    </span>
+
+                    <strong>
+                        Understandable Output
+                    </strong>
+
+                    <small>
+                        BioSignal shows the score,
+                        trend and contributing
+                        measurements visually.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+
     </main>
 
 
+    <!-- ===================================================== -->
+    <!-- FOOTER -->
+    <!-- ===================================================== -->
 
-    <!-- DISCLAIMER -->
     <footer>
 
         <strong>
-            Research prototype
+            BioSignal Research Prototype
         </strong>
 
-        — not a medical diagnosis.
+        <br>
+
+        Not a medical diagnosis.
 
         The displayed value is a
-        BioSignal warning score and
-        should not be interpreted as
-        a probability of sepsis.
+        BioSignal warning score and should not
+        be interpreted as a clinically validated
+        probability of sepsis.
 
     </footer>
-
 
 </div>
 
@@ -711,5 +869,4 @@
 <script src="/app.js"></script>
 
 </body>
-
 </html>
